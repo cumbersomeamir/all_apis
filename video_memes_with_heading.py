@@ -40,7 +40,7 @@ async def image_to_video(image_url):
     result_fetched = False
         # Continuously check the status until it's completed
     while not result_fetched:
-        status = await fal_client.status_async("fal-ai/kling-video/v1/standard/text-to-video", request_id, with_logs=True)
+        status = await fal_client.status_async("fal-ai/kling-video/v1/standard/image-to-video", request_id, with_logs=True)
         print(f"Current Status: {status}")  # Print the status object for debugging
         
         # Check for various possible status states
