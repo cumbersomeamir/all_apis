@@ -1,6 +1,9 @@
 import fal_client
 import asyncio
 
+
+
+
 def on_queue_update(update):
     if isinstance(update, fal_client.InProgress):
         for log in update.logs:
@@ -34,21 +37,24 @@ async def image_to_video(image_url):
 
     request_id = handler.request_id
     print("Request ID:", request_id)
-
+    result_fetched = False
         # Continuously check the status until it's completed
-    while True:
+    while not result_fetched:
         status = await fal_client.status_async("fal-ai/kling-video/v1/standard/text-to-video", request_id, with_logs=True)
         print(f"Current Status: {status}")  # Print the status object for debugging
         
         # Check for various possible status states
-        if hasattr(status, "status") and status.status == "completed":
-            break
-        elif hasattr(status, "status") and status.status == "failed":
+        if "Completed" in str(status):
+            print("Request completed.")
+            result_fetched = True
+        elif "Failed" in str(status):
             raise Exception("Request failed.")
-        elif hasattr(status, "status") and status.status == "queued":
+        elif "Queued" in str(status):
             print("Request is still in queue...")
-        elif hasattr(status, "status") and status.status == "running":
+        elif "InProgress" in str(status):
             print("Request is currently running...")
+    
+
         
         await asyncio.sleep(2)  # Wait for 2 seconds before checking again
         
@@ -74,3 +80,19 @@ print("The image url is ", image_url)
 video_url, video_response = asyncio.run(image_to_video(image_url))
 print("The final video URL is:", video_url)
 print("The full response object is:", video_response)
+
+
+#Final Logs
+'''
+Current Status: InProgress(logs=[])
+Request is currently running...
+Current Status: Completed(logs=[], metrics={'inference_time': 271.5913758277893})
+Request completed.
+Video URL: https://v3.fal.media/files/elephant/hpGcOZAwT3PSh3o9cHEYO_output.mp4
+The final video URL is: https://v3.fal.media/files/elephant/hpGcOZAwT3PSh3o9cHEYO_output.mp4
+The full response object is: {'video': {'url': 'https://v3.fal.media/files/elephant/hpGcOZAwT3PSh3o9cHEYO_output.mp4', 'content_type': 'video/mp4', 'file_name': 'output.mp4', 'file_size': 6237389}}
+'''
+
+
+#Also accept aspect ratio from user
+
