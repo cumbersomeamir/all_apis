@@ -12,6 +12,12 @@ import requests
 from io import BytesIO
 import asyncio
 import fal_client
+import openai
+from elevenlabs import ElevenLabs
+import json
+import uuid
+from pydub import AudioSegment
+
 
 # API keys from environment variables
 aws_access_key = os.getenv("AWS_ACCESS_KEY")
@@ -165,23 +171,24 @@ topic = "Inpsirational Quotes"
 author = "Charles Bukowski"
 mood = "Sad"
 video_length = 5
-num_quotes = video_length/5
+num_quotes = int(video_length/5)
 voice_type = "Male"
 durations= []
-prompt = "Create a artistic video about "+ generated_text
+
 
 
 #Calling all functions
 for j in range (num_quotes):
     generated_text = create_quote(topic, author, mood) #Generating text
     print("Done with generating text")
+    prompt = "Create a artistic video about "+ generated_text
     submit_text(generated_text) #Submitting text to Elevenlabs
     print("Text submitted to Elevenlabs")
     history_item_id = get_history_item_id() #Get the history of the submiited voice job
     print("The Elevenlabs histroy item id is ", history_item_id)
     audio_file_path = create_audiofile(history_item_id, durations) #creating audio file in local
     print("Audiofile created successfully at location")
-    video_url, result = text_to_video(prompt)
+    video_url, video_response = asyncio.run(text_to_video(prompt))
     print("Video created successfully by Kling")
     
     #Download the video from video url
