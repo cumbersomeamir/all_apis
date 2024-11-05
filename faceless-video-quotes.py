@@ -17,6 +17,10 @@ from elevenlabs import ElevenLabs
 import json
 import uuid
 from pydub import AudioSegment
+import requests
+from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
+import os
+
 
 
 # API keys from environment variables
@@ -156,7 +160,74 @@ def create_audiofile(history_item_id, durations):
     durations.append(duration)
     print(f"{file_path} saved successfully, duration: {duration} seconds")
     return file_path
+
+
+def download_video(video_url):
+    # Ensure the downloaded_videos folder exists
+    folder_path = "downloaded_videos"
+    os.makedirs(folder_path, exist_ok=True)
+    
+    # Generate a unique filename
+    file_name = f"{uuid.uuid4()}.mp4"
+    file_path = os.path.join(folder_path, file_name)
+    
+    # Download the video
+    response = requests.get(video_url, stream=True)
+    if response.status_code == 200:
+        with open(file_path, "wb") as file:
+            for chunk in response.iter_content(chunk_size=8192):
+                file.write(chunk)
+        print(f"Downloaded to {file_path}")
+    else:
+        print("Failed to download video")
+        file_path = None
+    
+    return file_path
+
+
+
+def combine_audio_video(root_dir="/Users/amir/desktop/all_apis/lib/python3.12/site-packages"):
+    audio_dir = os.path.join(root_dir, "generated_audio")
+    video_dir = os.path.join(root_dir, "downloaded_videos")
+    combined_dir = os.path.join(root_dir, "combined_videos")
+    
+    # Create combined_videos directory if it does not exist
+    if not os.path.exists(combined_dir):
+        os.makedirs(combined_dir)
+    
+    # Filter out non-media files and get sorted lists of audio and video files
+    audio_files = sorted([f for f in os.listdir(audio_dir) if f.endswith(('.mp3', '.wav'))])
+    video_files = sorted([f for f in os.listdir(video_dir) if f.endswith('.mp4')])
+    
+    # Combine files one by one
+    for i, (audio_file, video_file) in enumerate(zip(audio_files, video_files)):
+        audio_path = os.path.join(audio_dir, audio_file)
+        video_path = os.path.join(video_dir, video_file)
         
+        # Load video and audio
+        try:
+            video_clip = VideoFileClip(video_path)
+            audio_clip = AudioFileClip(audio_path)
+            
+            # Set audio of the video clip
+            video_with_audio = video_clip.set_audio(audio_clip)
+            
+            # Define output path
+            output_path = os.path.join(combined_dir, f"combined_{i}.mp4")
+            
+            # Write the combined video
+            video_with_audio.write_videofile(output_path, codec="libx264", audio_codec="aac")
+            
+            # Close clips to release resources
+            video_clip.close()
+            audio_clip.close()
+        
+        except Exception as e:
+            print(f"Failed to process {video_file} or {audio_file}: {e}")
+
+    print("All audio and video files have been combined and saved to 'combined_videos' folder.")
+
+
 
 
 #Inputs
@@ -176,7 +247,7 @@ voice_type = "Male"
 durations= []
 
 
-
+'''
 #Calling all functions
 for j in range (num_quotes):
     generated_text = create_quote(topic, author, mood) #Generating text
@@ -187,9 +258,14 @@ for j in range (num_quotes):
     history_item_id = get_history_item_id() #Get the history of the submiited voice job
     print("The Elevenlabs histroy item id is ", history_item_id)
     audio_file_path = create_audiofile(history_item_id, durations) #creating audio file in local
-    print("Audiofile created successfully at location")
+    print("Audiofile created successfully at location", audio_file_path)
     video_url, video_response = asyncio.run(text_to_video(prompt))
     print("Video created successfully by Kling")
     
     #Download the video from video url
     #Combine the Audio and the video
+'''
+audio_file_path = "/Users/amir/Desktop/all_apis/lib/python3.12/site-packages/generated_audio/37c72d06-0b03-4171-969c-89e1e65dbc3b.mp3"
+video_url =  "https://v3.fal.media/files/rabbit/KUZl-w75a7qMWj-EZRATX_output.mp4"
+video_file_path = download_video(video_url)
+combine_audio_video()
