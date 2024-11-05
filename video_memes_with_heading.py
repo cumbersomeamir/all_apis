@@ -95,4 +95,6 @@ The full response object is: {'video': {'url': 'https://v3.fal.media/files/eleph
 
 
 #Also accept aspect ratio from user
+#Add prompt to make the text constant in the video
+
 
