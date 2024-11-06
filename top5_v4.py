@@ -256,3 +256,4 @@ print("Final Video with Audio created")
 
 #Reverse both array for countdown
 #Metrics should increase/decrease sequentially
+#Add extended image/video at the beginning explaining the topic which will also serve as the thumbnail
