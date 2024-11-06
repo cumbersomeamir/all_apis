@@ -222,6 +222,10 @@ print(final_object)
 subjects = list(final_object.keys())
 metrics = list(final_object.values())
 
+# Reverse the order
+subjects.reverse()
+metrics.reverse()
+
 # Generate images
 final_casual_subjects = generate_casual_image(subjects, casual_subjects)
 final_action_subjects = generate_action_image(subjects, action_subjects)
@@ -248,6 +252,7 @@ add_audio_to_video("final_compiled_video.mp4", "sample.mp3", "final_video_with_a
 
 
 print("Final Video with Audio created")
+
 
 #Reverse both array for countdown
 #Metrics should increase/decrease sequentially
