@@ -77,7 +77,8 @@ def generate_action_image(subjects, action_subjects):
     return action_subjects
 
 # Using OpenCV to add numbers to images
-def add_number_to_image_cv2(url, number):
+# Modified function to add number and subject name to images
+def add_number_and_name_to_image_cv2(url, number, subject_name):
     output_folder = "images_with_text"
     os.makedirs(output_folder, exist_ok=True)
 
@@ -87,14 +88,14 @@ def add_number_to_image_cv2(url, number):
 
     font_scale = min(img.shape[1], img.shape[0]) / 500
     font_thickness = 2
-    text = f"{number}."
+    text = f"{number}. {subject_name}"
     text_size = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)[0]
     x = (img.shape[1] - text_size[0]) // 2
     y = int(img.shape[0] * 0.25)
 
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), font_thickness)
     cv2.imwrite(os.path.join(output_folder, f"image_with_number_{number}.png"), img)
-    print(f"Image with number {number} saved.")
+    print(f"Image with number {number} and subject '{subject_name}' saved.")
 
 # Using OpenCV to add metrics to images
 def add_metric_to_image_cv2(url, metric):
@@ -225,9 +226,9 @@ metrics = list(final_object.values())
 final_casual_subjects = generate_casual_image(subjects, casual_subjects)
 final_action_subjects = generate_action_image(subjects, action_subjects)
 
-# Add numbers to casual images
-for i, url in enumerate(final_casual_subjects, start=1):
-    add_number_to_image_cv2(url, i)
+# Add numbers and subject names to casual images
+for i, (url, subject) in enumerate(zip(final_casual_subjects, subjects), start=1):
+    add_number_and_name_to_image_cv2(url, i, subject)
 
 # Add metrics to action images
 for url, metric in zip(final_action_subjects, metrics):
@@ -250,7 +251,3 @@ print("Final Video with Audio created")
 
 #Reverse both array for countdown
 #Metrics should increase/decrease sequentially
-#Motion is still unresolved
-#Thumbnail image with title needs to be generated
-#Transitions can also be added
-
