@@ -16,6 +16,9 @@ import openai
 import os
 import json
 import ast
+from PIL import Image, ImageDraw, ImageFont
+import requests
+from io import BytesIO
 
 #Accepting all environment variables
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -95,16 +98,46 @@ def generate_action_image(subjects, action_subjects):
         
     return action_subjects
         
-        
-        
 
+
+def add_number_to_image(url, number):
+    # Create folder if it doesn't exist
+    output_folder = "images_with_text"
+    os.makedirs(output_folder, exist_ok=True)
+
+    response = requests.get(url)
+    img = Image.open(BytesIO(response.content))
+
+    # Font size
+    font_size = int(min(img.size) * 0.15)  # Adjust to desired size
+    font = ImageFont.truetype("ARIAL.TTF", font_size)
+
+    draw = ImageDraw.Draw(img)
+
+    # Text to be added
+    text = f"{number}."
+
+    # Calculate text position for centering
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_width, text_height = bbox[2] - bbox[0], bbox[3] - bbox[1]
+    x = (img.width - text_width) / 2
+    y = (img.height * 0.25) - (text_height / 2)  # Adjust position if needed
+
+    # Draw the main text in white without any background
+    draw.text((x, y), text, font=font, fill="white")
+
+    # Save image in the output folder
+    img.save(os.path.join(output_folder, f"image_with_number_{number}.png"))
+
+
+'''
 #Inputs
 topic = input("Enter the topic ")
 num_frames = input("Please enter 5 or 10 ")
 casual_subjects = []
 action_subjects = []
 
-'''
+
 #Calling all functions
 final_object = generate_text(topic, num_frames)
 print(final_object)
@@ -112,7 +145,7 @@ print(final_object)
 # Converting to subjects (keys) and metrics (values) lists
 subjects = list(final_object.keys())
 metrics = list(final_object.values())
-'''
+
 
 
 
@@ -120,5 +153,11 @@ subjects = ['Cheetah', 'Pronghorn Antelope']#Temporary
 metrics = ['Top Speed : 110', 'Top Speed : 55'] #Temporary
 
 
-#final_casual_subjects = generate_casual_image(subjects, casual_subjects)
-final_action_subjects = generate_action_image(subjects, action_subjects)
+final_casual_subjects = generate_casual_image(subjects, casual_subjects)
+print("The final casual list is ", final_casual_subjects)
+#final_action_subjects = generate_action_image(subjects, action_subjects)
+'''
+final_casual_subjects = ['https://oaidalleapiprodscus.blob.core.windows.net/private/org-IJLNdPbQswPXmkv4mFbx70h9/user-CAmDUFOATURBpfayYNaz0K35/img-nvq45ted76l485SI9RyBZm4F.png?st=2024-11-06T08%3A44%3A42Z&se=2024-11-06T10%3A44%3A42Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-11-05T20%3A17%3A14Z&ske=2024-11-06T20%3A17%3A14Z&sks=b&skv=2024-08-04&sig=7DpTi462zUyPZWy%2Bve5kFkWr0J/qpXUMrmUFchrBwLI%3D', 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-IJLNdPbQswPXmkv4mFbx70h9/user-CAmDUFOATURBpfayYNaz0K35/img-eX3t405KcPHmMTlR7yNP1upU.png?st=2024-11-06T08%3A44%3A52Z&se=2024-11-06T10%3A44%3A52Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-11-05T20%3A21%3A11Z&ske=2024-11-06T20%3A21%3A11Z&sks=b&skv=2024-08-04&sig=l7g1AWKP3c1YLSUtNA%2BupMkktmchln/vHli4tbFzLkI%3D']
+# Iterate over each image URL and add a number
+for i, url in enumerate(final_casual_subjects, start=1):
+    add_number_to_image(url, i)
