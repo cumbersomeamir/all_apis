@@ -12,6 +12,7 @@ from moviepy.video.fx.all import resize
 from moviepy.editor import VideoFileClip, concatenate_videoclips
 from moviepy.video.fx.resize import resize
 from moviepy.video.fx.all import crop
+from moviepy.editor import VideoFileClip, AudioFileClip
 
 # Accepting all environment variables
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -176,18 +177,37 @@ def create_alternating_video(casual_folder, action_folder, output_video_path, du
     final_video = concatenate_videoclips(clips, method="compose")
     final_video.write_videofile(output_video_path, codec="libx264", fps=24)
 
-# Paths for the image folders
-casual_images_folder = "images_with_text"
-action_images_folder = "action_images_with_metrics"
-
-# Create the alternating final video
-output_video_path = "final_compiled_video.mp4"
-create_alternating_video(casual_images_folder, action_images_folder, output_video_path, duration=1.5)
-
-print("Final alternating video created with pan and zoom effects added!")
 
 
-'''
+def add_audio_to_video(video_path, audio_path, output_path):
+    """
+    Add an audio file to a video file, cropping the audio if it's too long.
+
+    Parameters:
+    video_path (str): Path to the video file.
+    audio_path (str): Path to the audio file.
+    output_path (str): Path for the output video file with audio.
+    """
+    # Load the video and audio files
+    video = VideoFileClip(video_path)
+    audio = AudioFileClip(audio_path)
+
+    # If the audio is longer than the video, crop it to fit
+    if audio.duration > video.duration:
+        audio = audio.subclip(0, video.duration)
+
+    # Set the audio of the video
+    video = video.set_audio(audio)
+
+    # Write the result to a new file
+    video.write_videofile(output_path, codec="libx264", audio_codec="aac")
+
+    # Close the video and audio clips
+    video.close()
+    audio.close()
+
+
+
 # Inputs
 topic = input("Enter the topic ")
 num_frames = input("Please enter 5 or 10 ")
@@ -212,7 +232,7 @@ for i, url in enumerate(final_casual_subjects, start=1):
 # Add metrics to action images
 for url, metric in zip(final_action_subjects, metrics):
     add_metric_to_image_cv2(url, metric)
-'''
+
 # Paths for the image folders
 casual_images_folder = "images_with_text"
 action_images_folder = "action_images_with_metrics"
@@ -222,4 +242,14 @@ output_video_path = "final_compiled_video.mp4"
 create_alternating_video(casual_images_folder, action_images_folder, output_video_path, duration=1.5)
 
 print("Final alternating video created with pan and zoom effects added!")
+
+add_audio_to_video("final_compiled_video.mp4", "sample.mp3", "final_video_with_audio.mp4")
+
+
+print("Final Video with Audio created")
+
+#Reverse both array for countdown
+#Metrics should increase/decrease sequentially
+#Motion is still unresolved
+#Thumbnail image with title needs to be generated
 
