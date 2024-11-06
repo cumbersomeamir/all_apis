@@ -252,4 +252,5 @@ print("Final Video with Audio created")
 #Metrics should increase/decrease sequentially
 #Motion is still unresolved
 #Thumbnail image with title needs to be generated
+#Transitions can also be added
 
