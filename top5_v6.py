@@ -250,3 +250,4 @@ print("Final Video with Audio created")
 
 
 #Fix order and image relevancy issues
+#Add cleanup folders
