@@ -174,4 +174,4 @@ create_final_video_with_audio(image_folder, output_folder, audio_file)
 
 
 #Try different styles from Nvidia
-#Sound Effects need to be added
+#Sound Effects need to be added - prompt should be shorted to having isolated sound effects, also a single long sound effect can also be generated for the whole video
