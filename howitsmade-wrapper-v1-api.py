@@ -3,7 +3,7 @@ import requests
 
 app = Flask(__name__)
 
-external_ip = os.getenv("EXTERNAL_IP", "34.123.67.37")
+external_ip = os.getenv("EXTERNAL_IP")
 
 @app.route('/video-story-howitsmade', methods=['POST'])
 def video_story_proxy():
