@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 import requests
+import os
 
 app = Flask(__name__)
+
+external_ip = os.getenv("EXTERNAL_IP", "34.123.67.37")
 
 @app.route('/video-story-news', methods=['POST'])
 def video_story_proxy():
@@ -21,7 +24,7 @@ def video_story_proxy():
     num_frames = data.get('num_frames', default_num_frames)
 
     # Prepare the request payload with injected topic
-    url = "http://34.123.67.37:7004/video-story"
+    url = f"http://{external_ip}:7004/video-story"
     headers = {"Content-Type": "application/json"}
     payload = {
         "topic": topic_with_injection,
