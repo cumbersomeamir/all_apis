@@ -29,6 +29,8 @@ def clear_all_folders():
     folders = ["images_with_text", "action_images_with_metrics"]
     for folder in folders:
         clear_folder(folder)
+        os.makedirs(folder, exist_ok=True)  # Ensure folder exists after clearing
+
 
 # Clear a specific folder
 def clear_folder(folder_path):
