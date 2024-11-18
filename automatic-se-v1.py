@@ -217,6 +217,12 @@ def main():
         print("Process completed successfully.")
     except Exception as e:
         print(f"Error: {e}")
+
+
+#Create API
+#Send final response through S3
+# Name files in audio folder with uuid
+# Delete the folder contents on startup
         
         
 
