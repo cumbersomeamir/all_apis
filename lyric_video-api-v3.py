@@ -32,7 +32,7 @@ def create_video_with_audio():
     num_frames = data.get("num_frames")
 
     # Step 1: Request video generation
-    response = requests.post("http://localhost:7035/video-story", json={"topic": topic, "num_frames": num_frames})
+    response = requests.post(f"http://{external_ip}:7035/video-story", json={"topic": topic, "num_frames": num_frames})
     if response.status_code != 200:
         return jsonify({"error": "Failed to generate video"}), 500
 
