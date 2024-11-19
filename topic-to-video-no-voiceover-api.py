@@ -169,7 +169,7 @@ def create_video(clip_info):
     print(f"Video saved as {output_path}")
 
 
-@app.route('/video-story', methods=['POST'])
+@app.route('/create-video-no-voiceover', methods=['POST'])
 def video_story():
     data = request.get_json()
     topic = data.get('topic')
