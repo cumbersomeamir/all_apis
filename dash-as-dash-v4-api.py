@@ -1,3 +1,4 @@
+#Use moviepy version - pip install moviepy==1.0.3
 from flask import Flask, request, jsonify
 import openai
 import os
@@ -14,6 +15,7 @@ from botocore.exceptions import NoCredentialsError
 from PIL import Image
 from urllib.request import urlopen, urlretrieve
 import uuid
+
 
 
 app = Flask(__name__)
