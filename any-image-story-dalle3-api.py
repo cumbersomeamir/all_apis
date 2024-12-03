@@ -1,3 +1,4 @@
+#Use moviepy version - pip install moviepy==1.0.3
 from flask import Flask, request, jsonify, send_file
 import openai
 import os
