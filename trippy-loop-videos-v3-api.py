@@ -1,3 +1,4 @@
+#Use moviepy version - pip install moviepy==1.0.3
 # Recipe
 '''
 Enter a topic to generate Loop Video using Kling
