@@ -180,7 +180,7 @@ async def process_request(text, image_text):
     return s3_url
 
 # Define the API endpoint
-@app.route('/generate-video', methods=['POST'])
+@app.route('/generate-emotional-meme', methods=['POST'])
 def generate_video():
     data = request.json
     text = data.get("text")
