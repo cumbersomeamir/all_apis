@@ -1,3 +1,4 @@
+#Use moviepy version - pip install moviepy==1.0.3
 import fal_client
 import fal_client
 import asyncio
