@@ -187,12 +187,13 @@ def download_video(url, output_folder, unique_id):
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
         
-        # Adjusting yt-dlp options to download any available format and not fail
+        # Add cookies file path here
         ydl_opts = {
             'format': 'mp4',  # Download any available mp4 format
             'outtmpl': os.path.join(output_folder, f'{unique_id}.%(ext)s'),  # Save video with unique_id
-            'ignoreerrors': True,  # Ignore any errors and continue
+            'ignoreerrors': True,  # Ignore errors and continue
             'merge_output_format': 'mp4',  # Ensure output is mp4
+            'cookiefile': '/home/azureuser/cookies.txt',  # Path to your cookies file
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
